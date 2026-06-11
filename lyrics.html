@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>月薪喵 - Salary Cat (Lyrics Edition)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a2e;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: "Microsoft YaHei", "PingFang SC", -apple-system, sans-serif;
+    overflow: hidden;
+  }
+
+  .cat-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+  }
+  .cat-container img {
+    max-width: 60vmin;
+    max-height: 60vmin;
+    image-rendering: pixelated;
+  }
+
+  .lyrics {
+    color: rgba(255, 215, 0, 0.8);
+    font-size: 1.1rem;
+    text-align: center;
+    min-height: 2em;
+    padding: 1rem 1.5rem;
+    letter-spacing: 0.15em;
+    user-select: none;
+    overflow: hidden;
+  }
+  .lyrics span {
+    display: block;
+    opacity: 0;
+    animation: showLine 14s infinite;
+  }
+  .lyrics span:nth-child(1) { animation-delay: 0s; }
+  .lyrics span:nth-child(2) { animation-delay: 2s; }
+  .lyrics span:nth-child(3) { animation-delay: 4s; }
+  .lyrics span:nth-child(4) { animation-delay: 6s; }
+  .lyrics span:nth-child(5) { animation-delay: 8s; }
+  .lyrics span:nth-child(6) { animation-delay: 10s; }
+
+  @keyframes showLine {
+    0%   { opacity: 0; transform: translateY(10px); }
+    3%   { opacity: 1; transform: translateY(0); }
+    13%  { opacity: 1; transform: translateY(0); }
+    15%  { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 0; }
+  }
+
+  .footer {
+    color: #444;
+    font-size: 0.85rem;
+    padding: 1rem;
+    letter-spacing: 0.2em;
+    user-select: none;
+  }
+  .footer a {
+    color: #555;
+    text-decoration: none;
+  }
+  .footer a:hover {
+    color: #ffd700;
+  }
+
+  .start-btn {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: opacity 0.5s;
+  }
+  .start-btn.hidden { opacity: 0; pointer-events: none; }
+  .start-btn .emoji {
+    font-size: 3.5rem;
+    animation: bounce 1s ease infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .start-btn .text {
+    color: #eee;
+    font-size: 1.3rem;
+    margin-top: 1rem;
+    border: 2px solid rgba(255,255,255,0.25);
+    padding: 0.6rem 2rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  .start-btn:hover .text {
+    background: rgba(255,255,255,0.08);
+    border-color: #ffd700;
+    color: #ffd700;
+  }
+  .start-btn .hint {
+    color: #555;
+    font-size: 0.8rem;
+    margin-top: 0.8rem;
+  }
+
+  .music-btn {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,215,0,0.25);
+    background: rgba(0,0,0,0.3);
+    color: #ffd700;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    backdrop-filter: blur(4px);
+  }
+  .music-btn:hover {
+    border-color: #ffd700;
+    background: rgba(255,215,0,0.1);
+    transform: scale(1.1);
+  }
+  .music-btn.playing {
+    animation: spin 2s linear infinite;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="start-btn" id="startBtn" onclick="start()">
+  <div class="emoji">🐱</div>
+  <div class="text">点击开始</div>
+  <div class="hint">点击任意位置启动动画与音乐</div>
+</div>
+
+<div class="cat-container">
+  <img src="cat.GIF" alt="Salary Cat">
+</div>
+
+<div class="lyrics">
+  <span>我真的特别爱你</span>
+  <span>为什么你会落泪</span>
+  <span>答应我不再流泪</span>
+  <span>在这世界</span>
+  <span>没有多少的时间</span>
+  <span>能让我对你思念</span>
+</div>
+
+<div class="footer">
+  <a href="https://github.com/qxz4188/salary-cat-web" target="_blank">salary-cat-web</a>
+</div>
+
+<button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="播放/暂停">🎵</button>
+
+<audio id="bgm" src="music.mp3" loop></audio>
+
+<script>
+function start() {
+  document.getElementById('startBtn').classList.add('hidden');
+  document.getElementById('bgm').play().catch(function(){});
+  document.getElementById('musicBtn').classList.add('playing');
+}
+
+function toggleMusic() {
+  var b = document.getElementById('bgm');
+  var btn = document.getElementById('musicBtn');
+  if (b.paused) {
+    b.play().catch(function(){});
+    btn.classList.add('playing');
+    btn.textContent = '🎵';
+  } else {
+    b.pause();
+    btn.classList.remove('playing');
+    btn.textContent = '🔇';
+  }
+}
+</script>
+</body>
+</html>
